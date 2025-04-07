@@ -1,4 +1,4 @@
-from app.utils.db import db
+from apps.utils.db import db
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime, timezone
@@ -14,4 +14,4 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     updated_date = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    order_products = relationship('OrderItem', backref='order', lazy='joined')
+    order_products = relationship('OrderProduct', backref='order', lazy='joined')

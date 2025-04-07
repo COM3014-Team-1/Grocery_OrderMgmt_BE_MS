@@ -1,10 +1,10 @@
-from app.utils.db import db
+from apps.utils.db import db
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime, timezone
 
-class OrderItem(db.Model):
-    __tablename__ = 'order_product'
+class OrderProduct(db.Model):
+    __tablename__ = 'order_items'
 
     order_item_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     order_id = db.Column(UUID(as_uuid=True), db.ForeignKey('orders.order_id'), nullable=False)

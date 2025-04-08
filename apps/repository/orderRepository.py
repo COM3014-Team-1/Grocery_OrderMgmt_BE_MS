@@ -1,5 +1,5 @@
 from apps.models.order import Order
-from apps.models.orderItem import OrderProduct
+from apps.models.orderItem import OrderItems
 from apps.utils.db import db
 from sqlalchemy.orm import joinedload
 from datetime import datetime, timezone
@@ -16,9 +16,9 @@ class OrderRepository:
             self.session.add(order)
             self.session.commit()
 
-            for product in data['order_products']:
-                order_product = OrderProduct(order_id=order.order_id, product_id=product['product_id'],
-                                             quantity=product['quantity'], price=product['price'])
+            for product in data['order_items']:
+                order_product = OrderItems(order_id=order.order_id, product_id=product['product_id'],
+                                             quantity=product['quantity'], unit_price=product['unit_price'])
                 self.session.add(order_product)
 
             self.session.commit()
@@ -58,14 +58,14 @@ class OrderRepository:
 
     def get_order(self, order_id):
         try:
-            return Order.query.options(joinedload(Order.order_products)).get(order_id)
+            return Order.query.options(joinedload(Order.order_items)).get(order_id)
         except Exception as err:
             current_app.logger.error(f"Error fetching order {order_id} in repository: {str(err)}")
             raise
 
     def get_user_orders(self, user_id):
         try:
-            return Order.query.filter_by(user_id=user_id).options(joinedload(Order.order_products)).all()
+            return Order.query.filter_by(user_id=user_id).options(joinedload(Order.order_items)).all()
         except Exception as err:
             current_app.logger.error(f"Error fetching orders for user {user_id} in repository: {str(err)}")
             raise

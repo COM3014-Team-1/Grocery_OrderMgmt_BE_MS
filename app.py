@@ -4,6 +4,7 @@ from config import appsettings, Config
 from flask_migrate import Migrate
 from apps.config.loggerConfig import configure_logger
 from apps.config.swaggerConfig import setup_swagger
+# from apps.controller.cartController import cart_bp
 from apps.controller.orderController import order_bp
 
 def create_app():
@@ -17,6 +18,7 @@ def create_app():
     setup_swagger(app)
 
     app.register_blueprint(order_bp)
+    # app.register_blueprint(cart_bp) 
 
     return app
 

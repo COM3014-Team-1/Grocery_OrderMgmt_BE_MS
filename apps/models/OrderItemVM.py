@@ -3,8 +3,9 @@ class OrderProductVM:
         self.order_item_id = str(order_item.order_item_id)
         self.order_id = str(order_item.order_id)
         self.product_id = str(order_item.product_id)
+        self.user_id=str(order_item.user_id)
         self.quantity = order_item.quantity
-        self.price = order_item.price
+        self.unit_price = order_item.price
     
     def to_dict(self):
         """Convert OrderProductVM to a dictionary"""
@@ -12,6 +13,7 @@ class OrderProductVM:
             "order_product_id": str(self.order_item_id) ,
             "order_id": str(self.order_id),
             "product_id": self.product_id,
+            "user_id" : self.user_id,
             "quantity": self.quantity,
-            "price": self.price
+            "unit_price": self.unit_price
         }

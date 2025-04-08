@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 from apps.utils.validators import validator 
 from flask import current_app
 from apps.models.order import Order
-from apps.models.orderItem import OrderProduct
+from apps.models.orderItem import OrderItems
 from apps.utils.util import util
 
 class OrderService:

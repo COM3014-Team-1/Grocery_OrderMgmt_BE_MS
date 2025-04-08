@@ -2,11 +2,11 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 def setup_swagger(app):
     SWAGGER_URL = '/swagger'
-    API_URL = '/static/swagger.json' #Add the API_URL here.
+    API_URL = '/static/swagger.json'
 
     swaggerui_blueprint = get_swaggerui_blueprint(
         SWAGGER_URL,
-        API_URL, #Pass the API_URL to the function.
+        API_URL,
         config={
             'app_name': "Order Management API"
         }

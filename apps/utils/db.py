@@ -10,6 +10,6 @@ def init_db(app):
     with app.app_context():
         engine = db.engine
         inspector = inspect(engine)
-        if not inspector.has_table("orders") or not inspector.has_table("order_product"):
+        if not inspector.has_table("orders") or not inspector.has_table("order_product") or not inspector.has_table("cart"):
             db.create_all()
-            current_app.logger.info("Database tables created.") #log the table creation
+            current_app.logger.info("Database tables created.") 

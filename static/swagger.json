@@ -1,238 +1,30 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Order Management API",
-      "version": "1.0.0"
-    },
-    "paths": {
-      "/orders": {
-        "post": {
-          "summary": "Create a new order",
-          "requestBody": {
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Order Management API",
+    "version": "1.0.0",
+    "description": "API for managing user orders and cart."
+  },
+  "paths": {
+    "/cart/{user_id}": {
+      "get": {
+        "summary": "Get Cart for a User",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
             "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart items for the user",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderSchema"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Order created successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Invalid order creation request",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/orders/{order_id}": {
-        "put": {
-          "summary": "UpdateOrderStatus",
-          "parameters": [
-            {
-              "name": "order_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderSchema"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Order updated successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Update order failed",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "Order not found",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "delete": {
-          "summary": "Cancel an order",
-          "parameters": [
-            {
-              "name": "order_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Order cancelled",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "Order not found or already cancelled",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "get": {
-          "summary": "GetOrderHistory",
-          "parameters": [
-            {
-              "name": "order_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Order details",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/OrderSchema"
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "Order not found",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/users/{user_id}/orders": {
-        "get": {
-          "summary": "TrackOrders",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "User orders",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/OrderSchema"
-                    }
-                  }
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Cart" }
                 }
               }
             }
@@ -240,21 +32,168 @@
         }
       }
     },
-    "components": {
-      "schemas": {
-        "OrderSchema": {
-          "type": "object",
-          "properties": {
-            "order_id": { "type": "string" },
-            "user_id": { "type": "string" },
-            "order_status": { "type": "string" },
-            "items":{
-              "type":"array",
-              "items":{
-                "type":"object",
-                "properties":{
-                  "product_id":{"type":"string"},
-                  "quantity":{"type":"integer"}
+    "/cart": {
+      "post": {
+        "summary": "Add Item to Cart",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Cart" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item added to cart",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Cart" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart/{cart_id}": {
+      "delete": {
+        "summary": "Remove Item from Cart",
+        "parameters": [
+          {
+            "name": "cart_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Item removed from cart" }
+        }
+      },
+      "put": {
+        "summary": "Update Cart Item Quantity",
+        "parameters": [
+          {
+            "name": "cart_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CartItemUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cart item updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Cart" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "summary": "Create an Order",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Order" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Order created successfully" }
+        }
+      }
+    },
+    "/orders/{order_id}": {
+      "get": {
+        "summary": "Get Order by ID",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Order" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Order Status",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Order" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Order status updated" }
+        }
+      },
+      "delete": {
+        "summary": "Cancel an Order",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Order cancelled" }
+        }
+      }
+    },
+    "/users/{user_id}/orders": {
+      "get": {
+        "summary": "Get All Orders for a User",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of user's orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Order" }
                 }
               }
             }
@@ -262,4 +201,52 @@
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "cart_id": { "type": "string", "format": "uuid" },
+          "order_id": { "type": "string", "format": "uuid", "nullable": true },
+          "user_id": { "type": "string", "format": "uuid" },
+          "product_id": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "unit_price": { "type": "integer" }
+        }
+      },
+      "CartItemUpdate": {
+        "type": "object",
+        "properties": {
+          "quantity": { "type": "integer", "minimum": 1 }
+        },
+        "required": ["quantity"]
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "string", "format": "uuid" },
+          "total_amount": { "type": "number", "format": "float" },
+          "order_status": {
+            "type": "string",
+            "enum": ["pending", "shipped", "delivered", "cancelled"]
+          },
+          "order_items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderItem" }
+          }
+        },
+        "required": ["user_id", "total_amount", "order_items"]
+      },
+      "OrderItem": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "unit_price": { "type": "number", "format": "float" }
+        },
+        "required": ["product_id", "quantity", "unit_price"]
+      }
+    }
   }
+}

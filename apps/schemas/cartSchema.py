@@ -5,8 +5,7 @@ from apps.models.cart import Cart
 
 class CartSchema(Schema):
     cart_id = fields.UUID()
-    order_id = fields.UUID(allow_none=True)
-    user_id = fields.UUID(required=True)
+    user_id = fields.String(required=True)
     product_id = fields.UUID(required=True)
     quantity = fields.Int(required=True, validate=validate.Range(min=1))
     unit_price = fields.Decimal(as_string=True, required=True)

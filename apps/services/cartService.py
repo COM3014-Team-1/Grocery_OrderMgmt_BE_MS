@@ -6,9 +6,9 @@ class CartService:
     def __init__(self, cart_repository=None):
         self.cart_repository = cart_repository or CartRepository()
 
-    def add_to_cart(self, user_id, order_id, product_id, quantity, unit_price):
+    def add_to_cart(self, user_id, product_id, quantity, unit_price):
         try:
-            cart_item = self.cart_repository.add_product_to_cart(user_id, order_id, product_id, quantity, unit_price)
+            cart_item = self.cart_repository.add_product_to_cart(user_id, product_id, quantity, unit_price)
             return cart_item
         except Exception as e:
             current_app.logger.error(f"Error adding to cart: {str(e)}")

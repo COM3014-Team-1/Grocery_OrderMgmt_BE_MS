@@ -10,7 +10,7 @@ cart_bp = Blueprint('cart', __name__)
 
 cart_service = CartService()
 
-@cart_bp.route('/cart/<uuid:user_id>', methods=['GET'])
+@cart_bp.route('/cart/<string:user_id>', methods=['GET'])
 def get_cart(user_id):
     try:
         LoggerUtil.log_info(f"Fetching cart for userId: {str(user_id)}")
@@ -31,10 +31,8 @@ def add_to_cart():
         user_id = validated_data['user_id']
         product_id = validated_data['product_id']
         quantity = validated_data['quantity']
-        unit_price = validated_data['unit_price']
-        order_id=validated_data['order_id']
-        
-        cart_item = cart_service.add_to_cart(user_id, order_id, product_id, quantity, unit_price)
+        unit_price = validated_data['unit_price'] 
+        cart_item = cart_service.add_to_cart(user_id, product_id, quantity, unit_price)
         return jsonify(schema.dump(cart_item)), 201
     except ValidationError as err:
         return ErrorHandlerUtil.handle_validation_error(err)

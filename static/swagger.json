@@ -14,7 +14,7 @@
             "name": "user_id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -39,7 +39,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/Cart" }
+              "schema": { "$ref": "#/components/schemas/RequestCart" }
             }
           }
         },
@@ -48,7 +48,7 @@
             "description": "Item added to cart",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Cart" }
+                "schema": { "$ref": "#/components/schemas/ResponseCart" }
               }
             }
           }
@@ -204,15 +204,23 @@
   },
   "components": {
     "schemas": {
-      "Cart": {
+      "RequestCart": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "string"},
+          "product_id": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "unit_price": { "type": "number", "format": "float" }
+        }
+      },
+      "ResponseCart": {
         "type": "object",
         "properties": {
           "cart_id": { "type": "string", "format": "uuid" },
-          "order_id": { "type": "string", "format": "uuid", "nullable": true },
-          "user_id": { "type": "string", "format": "uuid" },
+          "user_id": { "type": "string"},
           "product_id": { "type": "string", "format": "uuid" },
           "quantity": { "type": "integer", "minimum": 1 },
-          "unit_price": { "type": "integer" }
+          "unit_price": { "type": "number", "format": "float" }
         }
       },
       "CartItemUpdate": {
@@ -225,7 +233,7 @@
       "Order": {
         "type": "object",
         "properties": {
-          "user_id": { "type": "string", "format": "uuid" },
+          "user_id": { "type": "string"},
           "total_amount": { "type": "number", "format": "float" },
           "order_status": {
             "type": "string",

@@ -6,14 +6,14 @@ class CartRepository:
     def __init__(self, session=db.session):
         self.session = session
 
-    def add_product_to_cart(self, user_id, order_id, product_id, quantity, unit_price):
+    def add_product_to_cart(self, user_id, product_id, quantity, unit_price):
         try:
             cart_item = Cart.query.filter_by(user_id=user_id, product_id=product_id).first()
             if cart_item:
                 cart_item.quantity += quantity
                 cart_item.subtotal = cart_item.quantity * cart_item.unit_price
             else:
-                cart_item = Cart(user_id=user_id, order_id=order_id, product_id=product_id, quantity=quantity, unit_price=unit_price)
+                cart_item = Cart(user_id=user_id, product_id=product_id, quantity=quantity, unit_price=unit_price)
                 db.session.add(cart_item)
                 
             db.session.commit()

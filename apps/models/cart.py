@@ -7,7 +7,7 @@ class Cart(db.Model):
     __tablename__ = 'cart'
 
     cart_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  
-    user_id = db.Column(db.String(50), nullable=True) 
+    user_id = db.Column(db.String(50), nullable=False) 
     product_id = db.Column(UUID(as_uuid=True), nullable=False)  
     quantity = db.Column(db.Integer, default=1, nullable=False) 
     unit_price = db.Column(db.Float(10, 2), nullable=False) 

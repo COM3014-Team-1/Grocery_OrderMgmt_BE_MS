@@ -8,7 +8,7 @@ class OrderItems(db.Model):
 
     order_item_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     order_id = db.Column(UUID(as_uuid=True), db.ForeignKey('orders.order_id'), nullable=False)
-    user_id = db.Column(UUID(as_uuid=True))
+    user_id = db.Column(db.String(50), nullable=True)
     product_id = db.Column(UUID(as_uuid=True), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     unit_price = db.Column(db.Float, nullable=False)

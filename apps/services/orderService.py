@@ -8,8 +8,8 @@ from apps.models.orderItem import OrderItems
 from apps.utils.util import util
 
 class OrderService:
-    def __init__(self, order_repository=None):
-        self.order_repository = order_repository or OrderRepository()
+    def __init__(self):
+        self.order_repository = OrderRepository()
 
     def create_order(self, data):
         try:

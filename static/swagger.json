@@ -5,6 +5,11 @@
     "version": "1.0.0",
     "description": "API for managing user orders and cart."
   },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "paths": {
     "/cart/{user_id}": {
       "get": {
@@ -183,7 +188,7 @@
             "name": "user_id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -207,7 +212,7 @@
       "RequestCart": {
         "type": "object",
         "properties": {
-          "user_id": { "type": "string"},
+          "user_id": { "type": "string" },
           "product_id": { "type": "string", "format": "uuid" },
           "quantity": { "type": "integer", "minimum": 1 },
           "unit_price": { "type": "number", "format": "float" }
@@ -217,7 +222,7 @@
         "type": "object",
         "properties": {
           "cart_id": { "type": "string", "format": "uuid" },
-          "user_id": { "type": "string"},
+          "user_id": { "type": "string" },
           "product_id": { "type": "string", "format": "uuid" },
           "quantity": { "type": "integer", "minimum": 1 },
           "unit_price": { "type": "number", "format": "float" }
@@ -233,7 +238,7 @@
       "Order": {
         "type": "object",
         "properties": {
-          "user_id": { "type": "string"},
+          "user_id": { "type": "string" },
           "total_amount": { "type": "number", "format": "float" },
           "order_status": {
             "type": "string",
@@ -254,6 +259,23 @@
           "unit_price": { "type": "number", "format": "float" }
         },
         "required": ["product_id", "quantity", "unit_price"]
+      },
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "cart_id": { "type": "string", "format": "uuid" },
+          "user_id": { "type": "string" },
+          "product_id": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer" },
+          "unit_price": { "type": "number", "format": "float" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

@@ -5,11 +5,13 @@ from apps.schemas.orderHistoryDto import orders_History_dto_schema
 from marshmallow import ValidationError
 from apps.exception.exception import OrderNotFoundError, OrderCreationError, OrderUpdateError, OrderCancelError, UserOrdersFetchError
 from apps.utils.errorHandler import ErrorHandlerUtil
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 order_bp = Blueprint('order', __name__)
 order_service = OrderService()
 
 @order_bp.route('/orders', methods=['POST'])
+@jwt_required()
 def create_order_controller():
     try:
         data = order_schema.load(request.get_json())  
@@ -24,6 +26,7 @@ def create_order_controller():
         return ErrorHandlerUtil.handle_generic_error(err)
 
 @order_bp.route('/orders/<order_id>', methods=['PUT'])
+@jwt_required()
 def update_order_status_controller(order_id):
     try:
         data = order_schema.load(request.get_json(), partial=True)
@@ -40,6 +43,7 @@ def update_order_status_controller(order_id):
         return ErrorHandlerUtil.handle_generic_error(err)
 
 @order_bp.route('/orders/<order_id>', methods=['DELETE'])
+@jwt_required()
 def cancel_order_controller(order_id):
     try:
         order = order_service.cancel_order(order_id)
@@ -52,6 +56,7 @@ def cancel_order_controller(order_id):
         return ErrorHandlerUtil.handle_generic_error(err)
 
 @order_bp.route('/orders/<order_id>', methods=['GET'])
+@jwt_required()
 def order_history_controller(order_id):
     try:
         order = order_service.get_order(order_id)
@@ -64,6 +69,7 @@ def order_history_controller(order_id):
         return ErrorHandlerUtil.handle_generic_error(err)
 
 @order_bp.route('/users/<user_id>/orders', methods=['GET'])
+@jwt_required()
 def get_user_orders_controller(user_id):
     try:
         orders = order_service.get_user_orders(user_id)

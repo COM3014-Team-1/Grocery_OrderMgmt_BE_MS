@@ -5,12 +5,14 @@ from marshmallow import ValidationError
 from apps.utils.errorHandler import ErrorHandlerUtil
 from apps.utils.logger import LoggerUtil
 from apps.exception.exception import CartItemNotFoundError, CartAddError, CartRemoveError, CartUpdateError, CartFetchError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 cart_bp = Blueprint('cart', __name__)
 
 cart_service = CartService()
 
 @cart_bp.route('/cart/<string:user_id>', methods=['GET'])
+@jwt_required()
 def get_cart(user_id):
     try:
         LoggerUtil.log_info(f"Fetching cart for userId: {str(user_id)}")
@@ -22,12 +24,12 @@ def get_cart(user_id):
         return ErrorHandlerUtil.handle_generic_error(e)
 
 @cart_bp.route('/cart', methods=['POST'])
+@jwt_required()
 def add_to_cart():
     try:
         data = request.get_json()
         schema = CartSchema()
         validated_data = schema.load(data)
-        
         user_id = validated_data['user_id']
         product_id = validated_data['product_id']
         quantity = validated_data['quantity']
@@ -42,6 +44,7 @@ def add_to_cart():
         return ErrorHandlerUtil.handle_generic_error(e)
 
 @cart_bp.route('/cart/<uuid:cart_id>', methods=['DELETE'])
+@jwt_required()
 def remove_from_cart(cart_id):
     try:
         cart_item = cart_service.remove_from_cart(cart_id)
@@ -54,15 +57,14 @@ def remove_from_cart(cart_id):
         return ErrorHandlerUtil.handle_generic_error(e)
 
 @cart_bp.route('/cart/<uuid:cart_id>', methods=['PUT'])
+@jwt_required()
 def update_cart(cart_id):
     try:
         data = request.get_json()
         schema = CartItemUpdateSchema()
         validated_data = schema.load(data)
-        
         new_quantity = validated_data['quantity']
         cart_item = cart_service.update_cart(cart_id, new_quantity)
-        
         return jsonify(CartSchema().dump(cart_item)), 200
     except ValidationError as err:
         return ErrorHandlerUtil.handle_validation_error(err)

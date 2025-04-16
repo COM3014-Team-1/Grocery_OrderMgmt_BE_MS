@@ -6,6 +6,7 @@ from apps.utils.errorHandler import ErrorHandlerUtil
 from apps.utils.logger import LoggerUtil
 from apps.exception.exception import CartItemNotFoundError, CartAddError, CartRemoveError, CartUpdateError, CartFetchError
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from apps.utils.authDecorator import role_required 
 
 cart_bp = Blueprint('cart', __name__)
 
@@ -13,6 +14,7 @@ cart_service = CartService()
 
 @cart_bp.route('/cart/<string:user_id>', methods=['GET'])
 @jwt_required()
+@role_required(['admin', 'user'])
 def get_cart(user_id):
     try:
         LoggerUtil.log_info(f"Fetching cart for userId: {str(user_id)}")
@@ -25,6 +27,7 @@ def get_cart(user_id):
 
 @cart_bp.route('/cart', methods=['POST'])
 @jwt_required()
+@role_required(['admin', 'user'])
 def add_to_cart():
     try:
         data = request.get_json()
@@ -45,6 +48,7 @@ def add_to_cart():
 
 @cart_bp.route('/cart/<uuid:cart_id>', methods=['DELETE'])
 @jwt_required()
+@role_required(['admin', 'user'])
 def remove_from_cart(cart_id):
     try:
         cart_item = cart_service.remove_from_cart(cart_id)
@@ -58,6 +62,7 @@ def remove_from_cart(cart_id):
 
 @cart_bp.route('/cart/<uuid:cart_id>', methods=['PUT'])
 @jwt_required()
+@role_required(['admin', 'user'])
 def update_cart(cart_id):
     try:
         data = request.get_json()

@@ -10,7 +10,8 @@ class OrderSchema(Schema):
     total_amount = fields.Float(required=True,  validate=validate.Range(min=0, error="Total amount cannot be negative."))
     order_items = fields.Nested(OrderItemSchema, many=True, required=True)
     order_id = fields.UUID()
-    order_status = fields.String(required=False, validate=validate.OneOf(["pending", "shipped", "delivered", "cancelled"])) 
+    order_status = fields.String(required=False, validate=validate.OneOf(["pending", "shipped", "delivered", "cancelled"]))
+    shipping_address= fields.String(required=True)
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
     

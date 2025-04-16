@@ -244,6 +244,7 @@
             "type": "string",
             "enum": ["pending", "shipped", "delivered", "cancelled"]
           },
+          "shipping_address": { "type": "string" },
           "order_items": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/OrderItem" }

@@ -11,6 +11,7 @@ class Order(db.Model):
     user_id = db.Column(db.String(50), nullable=True)
     total_amount = db.Column(db.Float, nullable=False)
     order_status = db.Column(db.String(50), nullable=False, default="Pending")
+    shipping_address=db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 

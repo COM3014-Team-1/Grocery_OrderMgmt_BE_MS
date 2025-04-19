@@ -6,16 +6,17 @@ from apps.config.loggerConfig import configure_logger
 from apps.config.swaggerConfig import setup_swagger
 from apps.controller.cartController import cart_bp
 from apps.controller.orderController import order_bp
+from flask_jwt_extended import JWTManager
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
     init_db(app)
     migrate = Migrate(app, db) 
     
     configure_logger(app)
     setup_swagger(app)
+    JWTManager(app)
 
     app.register_blueprint(order_bp)
     app.register_blueprint(cart_bp) 

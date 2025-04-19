@@ -12,7 +12,7 @@ class OrderRepository:
 
     def create_order(self, data):
         try:
-            order = Order(user_id=data['user_id'], total_amount=data['total_amount'])
+            order = Order(user_id=data['user_id'], total_amount=data['total_amount'],  shipping_address=data['shipping_address'])
             self.session.add(order)
             self.session.commit()
 

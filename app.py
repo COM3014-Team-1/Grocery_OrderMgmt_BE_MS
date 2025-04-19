@@ -11,7 +11,6 @@ from flask_jwt_extended import JWTManager
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config
     init_db(app)
     migrate = Migrate(app, db) 
     

@@ -37,8 +37,7 @@ def update_order_status_controller(order_id):
         current_app.logger.info(f"Updating Order with id: {order_id}")
         order = order_service.update_order(order_id, data)
         if order:
-            # return jsonify({"message": f"Order with id: {order.order_id} Updated with status: {order.order_status}"}), 200
-            return jsonify({})
+            return jsonify({"message": f"Order with id: {order.order_id} Updated with status: {order.order_status}"}), 200
         return ErrorHandlerUtil.handle_not_found_error("Order not found with id: {}".format(order_id))
     except ValidationError as err:
         return ErrorHandlerUtil.handle_validation_error(err)

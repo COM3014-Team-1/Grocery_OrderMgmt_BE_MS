@@ -1,5 +1,6 @@
 from apps.exception.exception import OrderNotFoundError, OrderCreationError, OrderUpdateError, OrderCancelError ,UserOrdersFetchError
 from apps.repository.orderRepository import OrderRepository
+from apps.services.cartService import CartService
 from marshmallow import ValidationError
 from apps.utils.validators import validator 
 from flask import current_app
@@ -10,10 +11,14 @@ from apps.utils.util import util
 class OrderService:
     def __init__(self):
         self.order_repository = OrderRepository()
+        self.cart_service = CartService()
 
     def create_order(self, data):
         try:
             order = self.order_repository.create_order(data)
+            #clearing the cart
+            products=util.get_product_ids(data)
+            self.cart_service.remove_from_cart(user_id=data['user_id'],products=products)
             return order
         except ValidationError as err:
             current_app.logger.error(f"Validation error: {err}")

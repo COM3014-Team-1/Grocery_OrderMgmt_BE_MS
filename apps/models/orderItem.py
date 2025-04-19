@@ -14,3 +14,5 @@ class OrderItems(db.Model):
     unit_price = db.Column(db.Float, nullable=False)
     create_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+
+    

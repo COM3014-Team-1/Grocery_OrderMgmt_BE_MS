@@ -15,7 +15,6 @@ class CartRepository:
             else:
                 cart_item = Cart(user_id=user_id, product_id=product_id, quantity=quantity, unit_price=unit_price)
                 db.session.add(cart_item)
-                
             db.session.commit()
             current_app.logger.info(f"Product {product_id} added to the cart for user {user_id}")
             return cart_item
@@ -24,29 +23,30 @@ class CartRepository:
             current_app.logger.error(f"Error adding product to cart: {str(e)}")
             raise
 
-    def remove_product_from_cart(self, cart_id):
+    def remove_product_from_cart(self, user_id, productId):
         try:
-            cart_item = Cart.query.get(cart_id)
+            cart_item = Cart.query.filter_by(user_id=user_id,product_id=productId).first()
             if not cart_item:
+                current_app.logger.info("cart item not found with productId: "+productId)
                 return None
             db.session.delete(cart_item)
             db.session.commit()
-            current_app.logger.info(f"Product removed from cart: {cart_id}")
+            current_app.logger.info(f"Product removed from cart: {productId}")
             return cart_item
         except Exception as e:
             db.session.rollback()
             current_app.logger.error(f"Error removing product from cart: {str(e)}")
             raise
 
-    def update_cart_quantity(self, cart_id, new_quantity):
+    def update_cart_quantity(self, product_id, new_quantity):
         try:
-            cart_item = Cart.query.get(cart_id)
+            cart_item = Cart.query.filter_by(product_id=product_id).first()
             if not cart_item:
                 return None
             cart_item.quantity = new_quantity
             cart_item.subtotal = cart_item.quantity * cart_item.unit_price
             db.session.commit()
-            current_app.logger.info(f"Cart item {cart_id} updated with new quantity {new_quantity}")
+            current_app.logger.info(f"Cart item {product_id} updated with new quantity {new_quantity}")
             return cart_item
         except Exception as e:
             db.session.rollback()

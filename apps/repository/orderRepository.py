@@ -17,7 +17,7 @@ class OrderRepository:
             self.session.commit()
 
             for product in data['order_items']:
-                order_product = OrderItems(order_id=order.order_id, product_id=product['product_id'],
+                order_product = OrderItems(order_id=order.order_id, product_id=product['product_id'],user_id=data['user_id'],
                                              quantity=product['quantity'], unit_price=product['unit_price'])
                 self.session.add(order_product)
 

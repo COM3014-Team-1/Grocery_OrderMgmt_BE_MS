@@ -1,12 +1,14 @@
 from flask import Blueprint, request, jsonify, current_app
 from apps.services.cartService import CartService
 from apps.schemas.cartSchema import CartSchema, CartItemUpdateSchema
+from apps.schemas.removeFromCartSchema import RemoveFromCartSchema
 from marshmallow import ValidationError
 from apps.utils.errorHandler import ErrorHandlerUtil
 from apps.utils.logger import LoggerUtil
 from apps.exception.exception import CartItemNotFoundError, CartAddError, CartRemoveError, CartUpdateError, CartFetchError
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from apps.utils.authDecorator import role_required 
+from apps.utils.authDecorator import role_required
+from apps.schemas.responseSchema import Response
 
 cart_bp = Blueprint('cart', __name__)
 
@@ -46,36 +48,40 @@ def add_to_cart():
     except Exception as e:
         return ErrorHandlerUtil.handle_generic_error(e)
 
-@cart_bp.route('/cart/<uuid:cart_id>', methods=['DELETE'])
+@cart_bp.route('/cartItems', methods=['DELETE'])
 @jwt_required()
 @role_required(['admin', 'user'])
-def remove_from_cart(cart_id):
+def remove_from_cart():
     try:
-        cart_item = cart_service.remove_from_cart(cart_id)
-        return jsonify({"message": "Cart item removed successfully"}), 200
-    except CartItemNotFoundError:
-        return ErrorHandlerUtil.handle_cart_item_not_found_error("Cart item with id: {} not found".format(cart_id))
+        data= request.get_json()
+        removeItem=RemoveFromCartSchema().load(data)
+        cart_service.remove_from_cart(removeItem['user_id'],removeItem['products'])
+        response=Response("Cart item removed successfully",removeItem['products'])
+        return jsonify(response.to_dict()), 200
+    except CartItemNotFoundError as e:
+        return ErrorHandlerUtil.handle_cart_item_not_found_error(e)
     except CartRemoveError as e:
         return ErrorHandlerUtil.handle_custom_error(e)
     except Exception as e:
         return ErrorHandlerUtil.handle_generic_error(e)
 
-@cart_bp.route('/cart/<uuid:cart_id>', methods=['PUT'])
+@cart_bp.route('/cart/<string:product_id>', methods=['PUT'])
 @jwt_required()
 @role_required(['admin', 'user'])
-def update_cart(cart_id):
+def update_cart(product_id):
     try:
         data = request.get_json()
         schema = CartItemUpdateSchema()
         validated_data = schema.load(data)
         new_quantity = validated_data['quantity']
-        cart_item = cart_service.update_cart(cart_id, new_quantity)
+        cart_item = cart_service.update_cart(product_id, new_quantity)
         return jsonify(CartSchema().dump(cart_item)), 200
     except ValidationError as err:
         return ErrorHandlerUtil.handle_validation_error(err)
     except CartItemNotFoundError:
-        return ErrorHandlerUtil.handle_cart_item_not_found_error("Updated failed Cart item with id: {} not found".format(cart_id))
+        return ErrorHandlerUtil.handle_cart_item_not_found_error("Updated failed Cart item with id: {} not found".format(product_id))
     except CartUpdateError as e:
         return ErrorHandlerUtil.handle_custom_error(e)
     except Exception as e:
         return ErrorHandlerUtil.handle_generic_error(e)
+

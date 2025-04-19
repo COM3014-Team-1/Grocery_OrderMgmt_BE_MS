@@ -14,23 +14,25 @@ class CartService:
             current_app.logger.error(f"Error adding to cart: {str(e)}")
             raise CartAddError(f"Error adding product to cart: {str(e)}")
 
-    def remove_from_cart(self, cart_id):
+    def remove_from_cart(self, user_id,products):
+        current_app.logger.info("Removing items from cart for userId:"+user_id)
         try:
-            cart_item = self.cart_repository.remove_product_from_cart(cart_id)
-            if not cart_item:
-                raise CartItemNotFoundError(f"Cart item with ID {cart_id} not found.")
-            return cart_item
+            for productId in products:
+                product=self.cart_repository.remove_product_from_cart(user_id,productId)
+                if not product:
+                    raise CartItemNotFoundError(f"product item with ID {productId} not found.")
+            return products                
         except CartItemNotFoundError as e:
-            raise
+            raise 
         except Exception as e:
             current_app.logger.error(f"Error removing from cart: {str(e)}")
             raise CartRemoveError(f"Error removing cart item: {str(e)}")
 
-    def update_cart(self, cart_id, new_quantity):
+    def update_cart(self, product_id, new_quantity):
         try:
-            cart_item = self.cart_repository.update_cart_quantity(cart_id, new_quantity)
+            cart_item = self.cart_repository.update_cart_quantity(product_id, new_quantity)
             if not cart_item:
-                raise CartItemNotFoundError(f"Cart item with ID {cart_id} not found.")
+                raise CartItemNotFoundError(f"Cart item with ID {product_id} not found.")
             return cart_item
         except CartItemNotFoundError as e:
             raise

@@ -9,9 +9,9 @@ class ErrorHandlerUtil:
         return jsonify({"errors": err.messages}), 400
 
     @staticmethod
-    def handle_cart_item_not_found_error(message):
+    def handle_cart_item_not_found_error(error : Exception):
         """ Handle cart item not found error """
-        return jsonify({"error": message}), 404
+        return jsonify({"error": str(error)}), 404
 
     @staticmethod
     def handle_custom_error(error: Exception):

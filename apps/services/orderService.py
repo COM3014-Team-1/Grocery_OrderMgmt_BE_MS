@@ -1,4 +1,4 @@
-from apps.exception.exception import OrderNotFoundError, OrderCreationError, OrderUpdateError, OrderCancelError ,UserOrdersFetchError
+from apps.exception.exception import OrderNotFoundError, OrderCreationError, OrderUpdateError, OrderCancelError ,UserOrdersFetchError, ProductAvailabilityError
 from apps.repository.orderRepository import OrderRepository
 from apps.services.cartService import CartService
 from marshmallow import ValidationError
@@ -7,22 +7,33 @@ from flask import current_app
 from apps.models.order import Order
 from apps.models.orderItem import OrderItems
 from apps.utils.util import util
+from apps.externalClientCalls.productService import check_product_availability_bulk
 
 class OrderService:
     def __init__(self):
         self.order_repository = OrderRepository()
         self.cart_service = CartService()
 
-    def create_order(self, data):
+    def create_order(self, data, auth_header):
         try:
+            current_app.logger.info("Check Product Avalibility in Order")
+            #checking product avalibality from product service
+            productsToCheck=util.get_productId_quantity(data)
+            unavailable_product=check_product_availability_bulk(productsToCheck, auth_header)
+            if unavailable_product!=None or unavailable_product:
+                raise ProductAvailabilityError(unavailable_product)
+            #creating order
             order = self.order_repository.create_order(data)
-            #clearing the cart
             products=util.get_product_ids(data)
+            #removing all the products from cart with in the order 
             self.cart_service.remove_from_cart(user_id=data['user_id'],products=products)
             return order
         except ValidationError as err:
             current_app.logger.error(f"Validation error: {err}")
             raise OrderCreationError("Invalid data provided for order creation.")
+        except ProductAvailabilityError as err:
+            current_app.logger.warning("Order failed due to unavailable products.")
+            raise err
         except Exception as err:
             current_app.logger.error(f"Error creating order: {str(err)}")
             raise OrderCreationError(f"Error creating order: {str(err)}")

@@ -113,7 +113,22 @@
           }
         }
       }
-      
+    },
+    "/emptyCart/{user_id}": {
+      "delete": {
+        "summary": "Empty Cart",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "cart has been emptied successfully" }
+        }
+      }
     },
     "/orders": {
       "post": {

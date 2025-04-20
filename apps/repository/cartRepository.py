@@ -1,6 +1,7 @@
 from apps.models.cart import Cart
 from apps.utils.db import db
 from flask import current_app
+from apps.exception.exception import CartFetchError
 
 class CartRepository:
     def __init__(self, session=db.session):
@@ -59,3 +60,13 @@ class CartRepository:
         except Exception as e:
             current_app.logger.error(f"Error fetching cart items for user {user_id}: {str(e)}")
             raise
+    
+    def delete_cart_by_user_id(self,user_id):
+        try:
+            cart_item = Cart.query.filter_by(user_id=user_id).first()
+            if not cart_item:
+                raise CartFetchError
+            deleted_count = Cart.query.filter_by(user_id=user_id).delete()
+            return deleted_count
+        except Exception as e:
+            raise Exception 

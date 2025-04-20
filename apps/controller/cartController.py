@@ -85,3 +85,14 @@ def update_cart(product_id):
     except Exception as e:
         return ErrorHandlerUtil.handle_generic_error(e)
 
+@cart_bp.route('/emptyCart/<string:user_id>', methods=['DELETE'])
+@jwt_required()
+@role_required(['admin', 'user'])
+def empty_cart(user_id):
+    try:
+        cart_service.empty_cart(user_id)
+        return jsonify(f"Cart Emptied successfully for userId: {user_id}"), 200
+    except CartFetchError as e:
+        return ErrorHandlerUtil.handle_not_found_error(e)
+    except Exception as e:
+        return ErrorHandlerUtil.handle_generic_error(e)

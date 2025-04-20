@@ -51,3 +51,15 @@ class CartService:
         except Exception as e:
             current_app.logger.error(f"Error fetching cart items for user {user_id}: {str(e)}")
             raise CartFetchError(f"Error fetching cart items for user {user_id}: {str(e)}")
+    def empty_cart(self, user_id):
+        try:
+            deleted_count = self.cart_repository.delete_cart_by_user_id(user_id)
+            if deleted_count == 0:
+                raise CartFetchError
+            return f"Successfully emptied the cart for user {user_id}."
+        except CartFetchError as e:
+            current_app.logger.error(f"Cart Fetch Error: {str(e)}")
+            raise CartFetchError("cart not found with userId: {user_id}")
+        except Exception as e:
+            current_app.logger.error(f"Unexpected Error while emptying cart for user {user_id}: {str(e)}")
+            raise Exception(f"Error emptying cart for user {user_id}")

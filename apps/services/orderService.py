@@ -7,7 +7,7 @@ from flask import current_app
 from apps.models.order import Order
 from apps.models.orderItem import OrderItems
 from apps.utils.util import util
-from apps.externalClientCalls.productService import check_product_availability_bulk
+from apps.externalClientCalls.productService import productservice
 
 class OrderService:
     def __init__(self):
@@ -19,13 +19,12 @@ class OrderService:
             current_app.logger.info("Check Product Avalibility in Order")
             #checking product avalibality from product service
             productsToCheck=util.get_productId_quantity(data)
-            unavailable_product=check_product_availability_bulk(productsToCheck, auth_header)
-            if unavailable_product!=None or unavailable_product:
-                raise ProductAvailabilityError(unavailable_product)
+            #check and update product quantity
+            productservice.update_product_qty(productsToCheck, auth_header)
             #creating order
             order = self.order_repository.create_order(data)
-            products=util.get_product_ids(data)
             #removing all the products from cart with in the order 
+            products=util.get_product_ids(data)
             self.cart_service.remove_from_cart(user_id=data['user_id'],products=products)
             return order
         except ValidationError as err:

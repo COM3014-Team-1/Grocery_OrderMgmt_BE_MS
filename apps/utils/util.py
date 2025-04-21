@@ -1,4 +1,5 @@
 from flask import current_app
+ 
 
 class util:
     def get_product_ids(data):
@@ -10,9 +11,8 @@ class util:
         order_items=data.get('order_items',[])
         return [ 
             {
-                'product_id' : str(item['product_id']),
-                'quantity'   : item['quantity']
-
+                "product_id" : str(item['product_id']),
+                "quantity"   : item['quantity']
             }
             for item in order_items
         ]
@@ -29,3 +29,6 @@ class util:
                 })
 
         return unavailableProducts
+    
+    def get_error_product_ids(service_response):
+        return [error.get("product_id") for error in service_response.get("errors", []) if "product_id" in error]

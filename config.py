@@ -12,6 +12,8 @@ def load_config():
 appsettings = load_config()
 
 class Config:
+    PRODUCT_SERVICE_URL = appsettings['PRODUCT_SERVICE_URL']
+    PRODUCT_UPDATE_URL  = appsettings['PRODUCT_UPDATE_URL']
     SECRET_KEY=appsettings['SECRET_KEY']
     HOST = appsettings['HOST']
     PORT = appsettings['PORT']

@@ -37,3 +37,8 @@ class CartUpdateError(Exception):
 class CartFetchError(Exception):
     """Raised when there is an error fetching cart items."""
     pass
+
+class ProductAvailabilityError(Exception):
+    def __init__(self, unavailable_products):
+        self.unavailable_products = unavailable_products
+        super().__init__("Some products are unavailable or insufficient in stock.")

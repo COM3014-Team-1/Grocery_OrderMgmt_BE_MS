@@ -3,7 +3,7 @@ from apps.services.orderService import OrderService
 from apps.schemas.orderSchema import order_schema, orders_schema
 from apps.schemas.orderHistoryDto import orders_History_dto_schema
 from marshmallow import ValidationError
-from apps.exception.exception import OrderNotFoundError, OrderCreationError, OrderUpdateError, OrderCancelError, UserOrdersFetchError
+from apps.exception.exception import OrderNotFoundError, OrderCreationError, OrderUpdateError, OrderCancelError, UserOrdersFetchError, ProductAvailabilityError
 from apps.utils.errorHandler import ErrorHandlerUtil
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from apps.utils.authDecorator import role_required
@@ -17,12 +17,15 @@ order_service = OrderService()
 @role_required(['admin', 'user'])
 def create_order_controller():
     try:
-        data = order_schema.load(request.get_json())  
-        current_app.logger.info("Creating Order")
-        order = order_service.create_order(data)
+        auth_header = request.headers.get("Authorization")
+        data = order_schema.load(request.get_json())
+        current_app.logger.info("Create Order")
+        order = order_service.create_order(data,auth_header)
         return jsonify({"message": f"Order Created Successfully with OrderId: {order.order_id}"}), 201
     except ValidationError as err:
         return ErrorHandlerUtil.handle_validation_error(err)
+    except ProductAvailabilityError as err:
+        return ErrorHandlerUtil.handle_Produc_unavaliable_error(err)
     except OrderCreationError as err:
         return ErrorHandlerUtil.handle_custom_error(err)
     except Exception as err:

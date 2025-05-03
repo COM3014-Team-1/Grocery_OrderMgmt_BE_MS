@@ -1,32 +1,16 @@
 version: '3.9'
 
 services:
-  db:
-    image: postgres:17
-    container_name: orders_Database
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root123
-      POSTGRES_DB: grocery_orders
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
   web:
     build: .
     container_name: order_microservice
     ports:
       - "5003:5003"
-    depends_on:
-      - db
     environment:
       FLASK_APP: app.py
       FLASK_ENV: prod
+      DATABASE_URL: postgresql://postgres:SHMIgtBBk1zQKYhMSmDX@database-1.c3u0oys8ik2c.eu-west-2.rds.amazonaws.com:5432/grocery_orders
     volumes:
       - .:/app
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
-volumes:
-  pgdata:

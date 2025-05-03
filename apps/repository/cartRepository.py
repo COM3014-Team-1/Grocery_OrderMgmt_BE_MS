@@ -64,9 +64,14 @@ class CartRepository:
     def delete_cart_by_user_id(self,user_id):
         try:
             cart_item = Cart.query.filter_by(user_id=user_id).first()
+            current_app.logger.error(f"cart Items for userId:{user_id} cartItems:{cart_item}")
             if not cart_item:
+                current_app.logger.error(f"No cart Items found for userId:{user_id}")
                 raise CartFetchError
             deleted_count = Cart.query.filter_by(user_id=user_id).delete()
+            current_app.logger.error(f"Cart Items Deelted for userId:{user_id}")
+            db.session.commit()
             return deleted_count
         except Exception as e:
+            db.session.rollback()
             raise Exception 

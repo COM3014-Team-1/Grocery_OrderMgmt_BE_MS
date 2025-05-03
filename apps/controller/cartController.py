@@ -90,6 +90,7 @@ def update_cart(product_id):
 @role_required(['admin', 'user'])
 def empty_cart(user_id):
     try:
+        current_app.logger.error(f"Emptying cart for userId:{user_id}")
         cart_service.empty_cart(user_id)
         return jsonify(f"Cart Emptied successfully for userId: {user_id}"), 200
     except CartFetchError as e:

@@ -1,29 +1,20 @@
-    # Use official Python image
-    FROM python:3.13.3-slim
+FROM python:3.13.3-slim
 
-    # Set environment variables
-    ENV PYTHONDONTWRITEBYTECODE=1
-    ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-    # Set working directory
-    WORKDIR /app
+WORKDIR /app
 
-    # Install system dependencies
-    RUN apt-get update && apt-get install -y gcc libpq-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y gcc libpq-dev && rm -rf /var/lib/apt/lists/*
 
-    # Install dependencies
-    COPY requirements.txt .
-    RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-    # Copy application code
-    COPY . .
+COPY . .
 
-    # Copy and make entrypoint script executable
-    COPY entrypoint.sh /app/entrypoint.sh
-    RUN chmod +x /app/entrypoint.sh
+ENV FLASK_ENV=prod
+ENV FLASK_APP=app.py
 
-    # Expose port
-    EXPOSE 5003
+EXPOSE 5003
 
-    # Use entrypoint script
-    ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["sh", "-c", "FLASK_ENV=prod python app.py"]

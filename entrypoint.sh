@@ -1,7 +1,7 @@
-#!/bin/bash
-echo "Starting Flask App..."
+# #!/bin/bash
+# echo "Starting Flask App..."
 
-export FLASK_APP=app.py
-flask db upgrade
+# export FLASK_APP=app.py
+# flask db upgrade
 
-exec python app.py
+# exec python app.py

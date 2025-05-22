@@ -9,7 +9,7 @@ services:
     environment:
       FLASK_APP: app.py
       FLASK_ENV: prod
-      # DATABASE_URL: postgresql://postgres:SHMIgtBBk1zQKYhMSmDX@database-1.c3u0oys8ik2c.eu-west-2.rds.amazonaws.com:5432/grocery_orders
+      # DATABASE_URL: postgresql://USERNAME:PASSWORD@HOST:PORT/grocery_orders
       # CONFIG_FILE_PATH : /config/appsettings.prod.config
     volumes:
       - .:/app
